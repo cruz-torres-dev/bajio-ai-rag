@@ -43,7 +43,6 @@ Pregunta del usuario:
 Respuesta:
 """
 
-
 # ──────────────────────────────────────────────
 # 1. PDF Loading & Text Extraction
 # ──────────────────────────────────────────────
@@ -58,7 +57,6 @@ def load_pdf_text(path: str) -> str:
             full_text += page_text + "\n"
     return full_text
 
-
 # ──────────────────────────────────────────────
 # 2. Text Chunking
 # ──────────────────────────────────────────────
@@ -72,13 +70,11 @@ def split_text_into_chunks(_text: str) -> list:
     )
     return splitter.create_documents([_text])
 
-
 # ──────────────────────────────────────────────
 # 3. Embedding + FAISS Vector Store
 # ──────────────────────────────────────────────
 @st.cache_resource(show_spinner="🧠 Generando embeddings y construyendo el índice FAISS...")
 def build_vector_store(_chunks):
-
     try:
         asyncio.get_running_loop()
     except RuntimeError:
@@ -86,11 +82,12 @@ def build_vector_store(_chunks):
         asyncio.set_event_loop(loop)
 
     embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/text-embedding-004",
+        model="models/embedding-001",
         google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
     )
 
     return FAISS.from_documents(_chunks, embedding=embeddings)
+
 # ──────────────────────────────────────────────
 # 4. QA Function (Gemini LLM Direct Invoke)
 # ──────────────────────────────────────────────
@@ -108,7 +105,6 @@ def get_qa_response(vector_store, user_query) -> str:
     formatted_prompt = SYSTEM_PROMPT.format(context=context, question=user_query)
     response = llm.invoke(formatted_prompt)
     return response.content
-
 
 # ──────────────────────────────────────────────
 # 5. Streamlit UI
