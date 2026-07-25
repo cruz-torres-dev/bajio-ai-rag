@@ -82,12 +82,12 @@ def build_vector_store(_chunks):
         asyncio.set_event_loop(loop)
 
     embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/embedding-001",
+        # ¡Aquí está el nombre actualizado que exige la API de Google!
+        model="models/gemini-embedding-001", 
         google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
     )
 
     return FAISS.from_documents(_chunks, embedding=embeddings)
-
 # ──────────────────────────────────────────────
 # 4. QA Function (Gemini LLM Direct Invoke)
 # ──────────────────────────────────────────────
