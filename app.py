@@ -78,7 +78,7 @@ def split_text_into_chunks(_text: str) -> list:
 @st.cache_resource(show_spinner="🧠 Generando embeddings y construyendo el índice FAISS…")
 def build_vector_store(_chunks) -> FAISS:
     """Create a FAISS index from document chunks using Google embeddings."""
-embeddings = GoogleGenerativeAIEmbeddings(
+    embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001",
         google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
     )
@@ -93,12 +93,12 @@ def get_qa_response(vector_store, user_query) -> str:
     relevant_docs = vector_store.similarity_search(user_query, k=4)
     context = "\n".join([doc.page_content for doc in relevant_docs])
     
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
-    google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
-    temperature=0.2,
-)
-    # Asegúrate de que esta línea esté alineada con las de arriba:
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.0-flash",
+        google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
+        temperature=0.2,
+    )
+    
     formatted_prompt = SYSTEM_PROMPT.format(context=context, question=user_query)
     response = llm.invoke(formatted_prompt)
     return response.content
