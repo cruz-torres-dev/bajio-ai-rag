@@ -90,6 +90,7 @@ def build_vector_store(_chunks) -> FAISS:
 # ──────────────────────────────────────────────
 def get_qa_chain():
     """Build a LangChain QA chain using Google Gemini."""
+    from langchain.chains.question_answering import load_qa_chain
     prompt = PromptTemplate(template=SYSTEM_PROMPT, input_variables=["context", "question"])
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
@@ -97,8 +98,6 @@ def get_qa_chain():
         temperature=0.2,
     )
     return load_qa_chain(llm, chain_type="stuff", prompt=prompt)
-
-
 # ──────────────────────────────────────────────
 # 5. Streamlit UI
 # ──────────────────────────────────────────────
