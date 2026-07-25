@@ -4,7 +4,7 @@ langchain-core==0.3.68
 langchain-community==0.3.27
 langchain-google-genai==2.1.8
 langchain-text-splitters==0.3.8
-faiss-cpu==1.11.0.post1
+faiss-cpu==1.12.0
 PyPDF2==3.0.1
 python-dotenv==1.1.1
 google-generativeai==0.8.5
