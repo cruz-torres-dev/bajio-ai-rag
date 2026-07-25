@@ -88,7 +88,7 @@ def build_vector_store(_chunks) -> FAISS:
 # ──────────────────────────────────────────────
 # 4. QA Function (Gemini LLM Direct Invoke)
 # ──────────────────────────────────────────────
-def get_qa_response(vector_store, user_query):
+def get_qa_response(vector_store, user_query) -> str:
     """Retrieve relevant chunks and generate an answer using Gemini directly."""
     relevant_docs = vector_store.similarity_search(user_query, k=4)
     context = "\n".join([doc.page_content for doc in relevant_docs])
@@ -102,6 +102,8 @@ def get_qa_response(vector_store, user_query):
     formatted_prompt = SYSTEM_PROMPT.format(context=context, question=user_query)
     response = llm.invoke(formatted_prompt)
     return response.content
+
+
 # ──────────────────────────────────────────────
 # 5. Streamlit UI
 # ──────────────────────────────────────────────
@@ -283,7 +285,6 @@ def main():
     raw_text = load_pdf_text(PDF_PATH)
     chunks = split_text_into_chunks(raw_text)
     vector_store = build_vector_store(chunks)
-    qa_chain = get_qa_chain()
 
     # ── Status ──
     col1, col2, col3 = st.columns(3)
@@ -348,11 +349,7 @@ def main():
         # Retrieve & generate
         with st.chat_message("assistant", avatar="🤖"):
             with st.spinner("🔍 Buscando en la base de conocimiento…"):
-                relevant_docs = vector_store.similarity_search(user_query, k=4)
-                response = qa_chain.invoke(
-                    {"input_documents": relevant_docs, "question": user_query}
-                )
-                answer = response["output_text"]
+                answer = get_qa_response(vector_store, user_query)
 
             st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
