@@ -94,7 +94,7 @@ def get_qa_response(vector_store, user_query) -> str:
     context = "\n".join([doc.page_content for doc in relevant_docs])
     
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
+        model="gemini-1.5-flash",
         google_api_key=os.getenv("GOOGLE_API_KEY"),
         temperature=0.2,
     )
