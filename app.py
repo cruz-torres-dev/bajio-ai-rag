@@ -93,12 +93,11 @@ def get_qa_response(vector_store, user_query) -> str:
     relevant_docs = vector_store.similarity_search(user_query, k=4)
     context = "\n".join([doc.page_content for doc in relevant_docs])
     
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
-        google_api_key=os.getenv("GOOGLE_API_KEY"),
-        temperature=0.2,
-    )
-    
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash",
+    google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
+    temperature=0.2,
+)
     # Asegúrate de que esta línea esté alineada con las de arriba:
     formatted_prompt = SYSTEM_PROMPT.format(context=context, question=user_query)
     response = llm.invoke(formatted_prompt)
