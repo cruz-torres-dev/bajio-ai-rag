@@ -4,6 +4,7 @@ Responde preguntas estrictamente basadas en la Base de Conocimiento oficial.
 """
 
 import os
+import asyncio
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -75,13 +76,20 @@ def split_text_into_chunks(_text: str) -> list:
 # ──────────────────────────────────────────────
 # 3. Embedding + FAISS Vector Store
 # ──────────────────────────────────────────────
-@st.cache_resource(show_spinner="🧠 Generando embeddings y construyendo el índice FAISS…")
-def build_vector_store(_chunks) -> FAISS:
-    """Create a FAISS index from document chunks using Google embeddings."""
+@st.cache_resource(show_spinner="🧠 Generando embeddings y construyendo el índice FAISS...")
+def build_vector_store(_chunks):
+
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/text-embedding-004",
         google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
     )
+
     return FAISS.from_documents(_chunks, embedding=embeddings)
 # ──────────────────────────────────────────────
 # 4. QA Function (Gemini LLM Direct Invoke)
