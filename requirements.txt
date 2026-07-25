@@ -4,3 +4,4 @@ langchain-google-genai
 langchain-community
 pypdf2
 faiss-cpu
+langchain-text-splitters
