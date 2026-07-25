@@ -11,9 +11,6 @@ from PyPDF2 import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
-# Ejemplo de reemplazo directo para generar la respuesta:
-response = llm.invoke(f"Contexto:\n{context}\n\nPregunta:\n{query}")
-st.write(response.content)
 from langchain.prompts import PromptTemplate
 
 # ──────────────────────────────────────────────
