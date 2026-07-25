@@ -79,9 +79,9 @@ def split_text_into_chunks(_text: str) -> list:
 def build_vector_store(_chunks) -> FAISS:
     """Create a FAISS index from document chunks using Google embeddings."""
 embeddings = GoogleGenerativeAIEmbeddings(
-    model="models/embedding-001",
-    google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
-)
+        model="models/embedding-001",
+        google_api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("api_key"),
+    )
     return FAISS.from_documents(_chunks, embedding=embeddings)
 
 
