@@ -86,18 +86,22 @@ def build_vector_store(_chunks) -> FAISS:
 
 
 # ──────────────────────────────────────────────
-# 4. QA Chain (Gemini LLM)
+# 4. QA Function (Gemini LLM Direct Invoke)
 # ──────────────────────────────────────────────
-def get_qa_chain():
-    """Build a LangChain QA chain using Google Gemini."""
-    from langchain.chains.question_answering import load_qa_chain
-    prompt = PromptTemplate(template=SYSTEM_PROMPT, input_variables=["context", "question"])
+def get_qa_response(vector_store, user_query):
+    """Retrieve relevant chunks and generate an answer using Gemini directly."""
+    relevant_docs = vector_store.similarity_search(user_query, k=4)
+    context = "\n".join([doc.page_content for doc in relevant_docs])
+    
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         google_api_key=os.getenv("GOOGLE_API_KEY"),
         temperature=0.2,
     )
-    return load_qa_chain(llm, chain_type="stuff", prompt=prompt)
+    
+    formatted_prompt = SYSTEM_PROMPT.format(context=context, question=user_query)
+    response = llm.invoke(formatted_prompt)
+    return response.content
 # ──────────────────────────────────────────────
 # 5. Streamlit UI
 # ──────────────────────────────────────────────
